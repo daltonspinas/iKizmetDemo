@@ -1,0 +1,47 @@
+
+<ng-container *ngIf="chartData">
+
+<select (change)="dateRangeSelected($event.target.value)">
+  <option>YTD</option>
+  <option>2Q 2020</option>
+  <option>1Q 2020</option>
+  <option>4Q 2019</option>
+  <option>3Q 2019</option>
+  <option>2Q 2019</option>
+  <option>1Q 2019</option>
+  <option>Custom Range</option>
+</select>
+
+  <google-chart (select)="onSelect($event)" [type]="'LineChart'" [title]="chartData.chartTitle" [data]="data" [columns]="columns" [width]="1200" [height]="600"></google-chart>
+
+  <!-- Start Table  -->
+
+  <table border="5" >
+    <caption>Current Period</caption>
+    <thead>
+      <tr>
+       <th colspan="2">Most Profitable Day</th>
+       <th colspan="2">Most Expensive Day</th>
+       <th colspan="2">Average Daily Revenue</th>
+       <th colspan="2">Operating Expense Ratio</th>
+      </tr>
+    </thead>
+    <!-- <tfoot>
+      <tr>
+        <td>I will be shown after tbody</td>
+      </tr>
+    </tfoot> -->
+    <tbody>
+      <tr><!-- First row -->
+        <td>{{stats.mostProfitableDay.date}}</td>
+        <td>{{currency + (stats.mostProfitableDay.val).toLocaleString()}}</td>
+        <td>{{stats.mostExpensiveDay.date}}</td>
+        <td>{{currency + (stats.mostExpensiveDay.val).toLocaleString()}}</td>
+        <td colspan="2">{{currency + (stats.avgRev.toFixed(2)).toLocaleString()}}</td>
+        <td colspan="2">{{(stats.operatingExpenseRatio * 100).toFixed(2) + '%'}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- End Table -->
+
+</ng-container>
