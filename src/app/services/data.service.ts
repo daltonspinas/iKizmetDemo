@@ -12,20 +12,18 @@ export interface IChartData {
   legend: string[]
 }
 
-// interface IDailyData {
-//   date: string,
-//   services: number,
-//   products: number,
-//   recurring: number,
-//   expenses: number
-// }
-
-export enum Data {
+export enum IData {
   Date = 0,
   Services = 1,
   Products = 2,
   Recurring = 3,
   Expenses = 4
+}
+
+export interface ITimeRange {
+  display: string,
+  start: string,
+  end: string,
 }
 
 export interface IStats {
@@ -63,6 +61,7 @@ export class DataService {
     })
   }
 
+  // Is this deprecated?
   formatDate(date) {
     // let formattedDate = this.datePipe.transform(date, 'MMMd');
     let formattedDate = this.datePipe.transform(date, 'yyyy-MM-ddTHH:mm:ss.SSS');
@@ -85,11 +84,10 @@ export class DataService {
     let mostExpensiveDay = { val: 0, date: '' }
     let totalExpenses = 0;
       input.forEach(day => {
-        console.log('current day: ', day)
         // add up products, services, recurring to get the daily revenue
-        let dailyRev = day[Data.Products] + day[Data.Services] + day[Data.Recurring];
+        let dailyRev = day[IData.Products] + day[IData.Services] + day[IData.Recurring];
         // get the daily expenses
-        let dailyExp = day[Data.Expenses];
+        let dailyExp = day[IData.Expenses];
 
         // Add the current day's revenue to the total for the period, same for expenses
         totalRev += dailyRev;
@@ -97,11 +95,11 @@ export class DataService {
 
         // if this daily value is higher than the previous high, it becomes the most profitable day
         if(dailyRev > mostProfitableDay.val){
-          mostProfitableDay = {val: dailyRev, date: day[Data.Date]}
+          mostProfitableDay = {val: dailyRev, date: day[IData.Date]}
         }
         // do the same thing for expenses
         if(dailyExp > mostExpensiveDay.val){
-          mostExpensiveDay = {val: dailyExp, date: day[Data.Date]}
+          mostExpensiveDay = {val: dailyExp, date: day[IData.Date]}
         }
     })
 

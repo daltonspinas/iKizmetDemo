@@ -2,17 +2,18 @@
 <ng-container *ngIf="chartData">
 
 <select (change)="dateRangeSelected($event.target.value)">
-  <option>YTD</option>
-  <option>2Q 2020</option>
-  <option>1Q 2020</option>
-  <option>4Q 2019</option>
-  <option>3Q 2019</option>
-  <option>2Q 2019</option>
-  <option>1Q 2019</option>
-  <option>Custom Range</option>
+  <option selected disabled hidden>Time Frame</option>
+  <option *ngFor="let opt of timeRanges, index as i" [value]="i">{{opt.display}}</option>
 </select>
 
-  <google-chart (select)="onSelect($event)" [type]="'LineChart'" [title]="chartData.chartTitle" [data]="data" [columns]="columns" [width]="1200" [height]="600"></google-chart>
+<select (change)="groupBy($event.target.value)">
+  <option selected disabled hidden>Group By</option>
+  <option>Day</option>
+  <option>Month</option>
+  <option>Quarter</option>
+</select>
+
+  <google-chart (select)="onSelect($event)" [type]="'LineChart'" [title]="chartData.chartTitle" [data]="displayData" [columns]="columns" [width]="1200" [height]="600"></google-chart>
 
   <!-- Start Table  -->
 
