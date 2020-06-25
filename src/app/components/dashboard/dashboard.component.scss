@@ -1,0 +1,19 @@
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+
+.data-table {
+    margin: 25px auto 0 auto;
+    width: 50%;
+    td {
+        font-size: medium;
+    }
+}
+
+.control-row {
+    width: 50%;
+    margin: 50px auto 25px;
+    display: flex;
+    justify-content: space-between;
+}

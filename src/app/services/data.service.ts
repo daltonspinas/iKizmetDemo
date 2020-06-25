@@ -52,28 +52,21 @@ export class DataService {
         return data.map(el => {
             // let's make our expenses positive for the sake of displaying it to the user on a graph
             el[1][3] = Math.abs(el[1][3]);
-
-            // this creates an object with a numerical value and a display value to be consumed by the google charts
-            // el[1] = el[1].map(num => {
-            //   return { v: num, f: currency + Number(num).toLocaleString() }
-            // });
-
             return [el[0], ...el[1]]
         })
     }
 
     // Is this deprecated?
-    formatDate(date) {
+    formatDate(date, format?: string) {
         // let formattedDate = this.datePipe.transform(date, 'MMMd');
-        let formattedDate = this.datePipe.transform(date, 'yyyy-MM-ddTHH:mm:ss.SSS');
+        let formattedDate = this.datePipe.transform(date, format ?? 'yyyy-MM-ddTHH:mm:ss.SSS');
         return formattedDate;
     }
 
     filterByDate(input: any[], start: string, end: string): any[] {
         return input.filter(data => {
-            let time = data[0]
+            let time = data[IData.Date]
             time = this.datePipe.transform(time, 'yyyy-MM-ddTHH:mm:ss.SSS');
-            console.log(this.datePipe.transform('Wed Jan 01 2020 00:00:00 GMT-0800', 'yyyy-MM-ddTHH:mm:ss.SSS'))
             return time >= start && time <= end;
         })
     }
@@ -108,9 +101,8 @@ export class DataService {
     }
 
     // TODO: set a type for returned display data
-    groupBy(input: any[], period: string): any[] {
+    groupByMonth(input: any[]): any[] {
         let result = [[]];
-        console.log(input)
         // Since the data is already sorted by date, we will keep track of the first instance and get it's month
         let currMonth = moment(this.formatDate(input[0][IData.Date])).month().toString();
         let monthCounter = 0
@@ -131,19 +123,18 @@ export class DataService {
         let result = [];
         
         input.forEach(interval => {
+            let intervalMonth = this.formatDate(interval[0][IData.Date], 'MMM-yy')
+            let intialVal = [intervalMonth,0,0,0,0]
             interval.reduce((prevDay, currDay) => {
-                prevDay[IData.Expenses] += currDay[IData.Expenses]
-                prevDay[IData.Recurring] += currDay[IData.Recurring]
-                prevDay[IData.Products] += currDay[IData.Products]
-                prevDay[IData.Services] += currDay[IData.Services]
-                return prevDay;
-            })
+                intialVal[IData.Expenses] += currDay[IData.Expenses]
+                intialVal[IData.Recurring] += currDay[IData.Recurring]
+                intialVal[IData.Products] += currDay[IData.Products]
+                intialVal[IData.Services] += currDay[IData.Services]
+                return intialVal;
+            }), intialVal
             // once we have reduced the value we can reassign the interval
-            console.log('first interval', interval[0])
-            result.push(interval[0]);
+            result.push(intialVal);
         })
-
-        console.log(result);
         return result;
     }
 }

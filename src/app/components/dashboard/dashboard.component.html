@@ -1,24 +1,24 @@
 <ng-container *ngIf="chartData">
+  
+  <div class="control-row">
+  <button (click)="exportAsSpreadsheet()">Export as Spreadsheet</button>
+  
+  <button (click)="viewHandler()">View as {{viewAsTable ? 'Graph' : 'Table'}}</button>
 
   <select (change)="dateRangeSelected($event.target.value)">
     <option selected disabled hidden>Time Frame</option>
     <option *ngFor="let opt of timeRanges, index as i" [value]="i">{{opt.display}}</option>
   </select>
 
-  <select (change)="groupBy($event.target.value)">
+  <select (change)="groupBy($event.target.value)" [ngStyle]="{'visibility': viewAsTable ? 'hidden' : 'visible'}">
     <option selected disabled hidden>Group By</option>
     <option>Day</option>
     <option>Month</option>
-    <option>Quarter</option>
   </select>
+</div>
 
-  <google-chart (select)="onSelect($event)" [type]="intervalToGroupBy !== 'Day' ? 'BarChart': 'LineChart'"
-    [title]="chartData.chartTitle" [data]="displayData" [columns]="columns" [width]="1200" [height]="600">
-  </google-chart>
-
-  <!-- Start Table  -->
-
-  <table border="5">
+  <!-- Start Stats  -->
+  <table class='data-table'>
     <caption>Current Period</caption>
     <thead>
       <tr>
@@ -45,10 +45,17 @@
       </tr>
     </tbody>
   </table>
-  <!-- End Table -->
+  <!-- End Stats -->
 
-<button (click)="exportAsSpreadsheet()">Export As Spreadsheet</button>
-  <table id='excel-table'>
+  <ng-container *ngIf="!viewAsTable">
+  <google-chart (select)="onSelect($event)" [type]="intervalToGroupBy !== 'Day' ? 'BarChart': 'LineChart'"
+    [title]="chartData.chartTitle" [data]="displayData" [columns]="columns" [width]="1200" [height]="600">
+  </google-chart>
+</ng-container>
+
+<!-- Start Table -->
+<ng-container >
+  <table id='excel-table' class='data-table' [hidden]="!viewAsTable">
     <tr>
       <th>
         Date
@@ -66,7 +73,7 @@
         Expenses
       </th>
     </tr>
-    <tr *ngFor="let data of displayData">
+    <tr *ngFor="let data of tableData">
       <td>
         {{data[0]}}
       </td>
@@ -80,9 +87,11 @@
         {{data[3]}}
       </td>
       <td>
-        {{data[4]}}
+       ({{data[4]}})
       </td>
     </tr>
   </table>
+</ng-container>
+<!-- End Table -->
 
 </ng-container>
